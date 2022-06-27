@@ -8,6 +8,7 @@ from jwt import decode, encode
 from functools import wraps
 from uuid import uuid4
 from datetime import datetime, timedelta
+from re import findall, match
 
 from app import db
 
@@ -136,16 +137,15 @@ def token_required(f):
 
 # ISBN validation
 def check(isbn):
-    check_digit = int(isbn[-1])
-    match = re.search(r"(\d)-(\d{3})-(\d{5})", isbn[:-1])
-
-    if not match:
+    d = findall(r"\d", isbn)
+    if len(d) != 13:
+        return False
+    if not match(r"97[89](?:-\d+){3}-\d$", isbn):
         return False
 
-    digits = match.group(1) + match.group(2) + match.group(3)
-    result = 0
-
-    for i, digit in enumerate(digits):
-        result += (i + 1) * int(digit)
-
-    return True if (result % 11) == check_digit else False
+    # The ISBN-13 check digit, which is the last digit of the ISBN, must range from 0 to 9
+    # and must be such that the sum of all the thirteen digits, each multiplied by its
+    # (integer) weight, alternating between 1 and 3, is a multiple of 10.
+    odd = [int(x) for x in d[::2]]
+    even = [int(x) * 3 for x in d[1::2]]
+    return (sum(odd) + sum(even)) % 10 == 0
