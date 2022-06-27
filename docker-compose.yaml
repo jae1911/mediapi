@@ -19,8 +19,8 @@ services:
       SECRET_KEY: "secret"
     depends_on:
       - redis
-    ports:
-      - 5000:5000
+    #ports:
+    #  - 5000:5000
     volumes:
       - ./backend-db:/app/db
 
@@ -33,5 +33,5 @@ services:
     #  - ./frontend:/var/www/html
     depends_on:
       - backend
-    ports:
-      - "8000:80"
+    #ports:
+    #  - "8000:80"
