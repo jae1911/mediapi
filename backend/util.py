@@ -5,6 +5,7 @@ from logging import getLogger
 from os import environ
 from flask import request, jsonify
 from jwt import decode
+from functools import wraps
 
 from app import db
 
