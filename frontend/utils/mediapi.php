@@ -25,6 +25,26 @@ class Mediapi {
 
         return $resultParsed;
     }
+
+    // Query books
+    public function queryBooks($token, $isbn) {
+        $data = array('isbn' => $isbn);
+        $options = array(
+          'http' => array(
+            'method'  => 'POST',
+            'content' => json_encode( $data ),
+            'header'=>  "Content-Type: application/json\r\n" .
+                        "Accept: application/json\r\n" .
+                        "x-access-tokens: " . $token . "\r\n"
+            )
+        );
+        $finalUri = "http://backend:5000/getBook";
+        $context  = stream_context_create( $options );
+        $result = file_get_contents($finalUri , false, $context );
+        $resultParsed = json_decode($result);
+
+        return $resultParsed;
+    }
 }
 
 class LoginApi {
