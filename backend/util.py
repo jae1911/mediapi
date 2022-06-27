@@ -124,7 +124,7 @@ def token_required(f):
             return jsonify({"err": "token is missing"})
 
         try:
-            data = jwt.decode(token, app.config["SECRET_KEY"], algorithms=["HS256"])
+            data = decode(token, secret_key, algorithms=["HS256"])
             current_user = Users.query.filter_by(public_id=data["public_id"]).first()
         except:
             return jsonify({"err": "the provided token is invalid"})

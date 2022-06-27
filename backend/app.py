@@ -65,7 +65,7 @@ def api_login():
 
 @app.post("/getMovie")
 @token_required
-def get_movie():
+def get_movie(self):
     req = request.get_json()
 
     if not req:
