@@ -13,9 +13,20 @@ body{
   justify-content: center;
   align-items: center;
 
+  padding-bottom: 5%;
+
   font-family: Helvetica, Arial, sans-serif;
 }
 
 .error {
     transform: translateX(-20px);
+}
+
+p {
+  max-width: 500px;
+  display: inline-block;
+}
+
+form p {
+  display: flex;
 }
