@@ -10,10 +10,28 @@ services:
       dockerfile: Dockerfile
       context: ./backend
     environment:
-      OMDB_KEY: "omdb secret here"
+      OMDB_KEY: "secret"
       #OMDB_ENDPOINT: "emdb endpoint here"
-      OLB_KEY: "OpenLibrary secret here"
       #OLB_ENDPOINT: "OpenLibrary endpoint here"
       REDIS_ENDPOINT: "redis"
       #REDIS_PORT: 6379
       #REDIS_DB: 0
+      SECRET_KEY: "secret"
+    depends_on:
+      - redis
+    ports:
+      - 5000:5000
+    volumes:
+      - ./backend-db:/app/db
+
+  frontend:
+    #image: php:8.1.7-apache-bullseye
+    build:
+      dockerfile: Dockerfile
+      context: ./frontend
+    #volumes:
+    #  - ./frontend:/var/www/html
+    depends_on:
+      - backend
+    ports:
+      - "8000:80"
