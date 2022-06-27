@@ -11,9 +11,9 @@ services:
       context: ./backend
     environment:
       OMDB_KEY: "omdb secret here"
-      OMDB_ENDPOINT: "emdb endpoint here"
+      #OMDB_ENDPOINT: "emdb endpoint here"
       OLB_KEY: "OpenLibrary secret here"
-      OLB_ENDPOINT: "OpenLibrary endpoint here"
+      #OLB_ENDPOINT: "OpenLibrary endpoint here"
       REDIS_ENDPOINT: "redis"
       #REDIS_PORT: 6379
       #REDIS_DB: 0
