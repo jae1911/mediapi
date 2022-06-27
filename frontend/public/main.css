@@ -1,0 +1,21 @@
+@media screen and (prefers-color-scheme: dark) {
+  body {
+    background-color: #212121;
+    color: #FFFF;
+  }
+}
+
+body{
+  padding-top: 5%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-family: Helvetica, Arial, sans-serif;
+}
+
+.error {
+    transform: translateX(-20px);
+}
