@@ -15,12 +15,12 @@ omdb_key = environ.get("OMDB_KEY")
 
 # Setup app and important stuff
 app = Flask(__name__)
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///backend.db"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///db/backend.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["SECRET_KEY"] = secret_key
 db = SQLAlchemy(app)
 
-from util import cache_val, get_val, init_db, token_required
+from util import cache_val, get_val, init_db, token_required, verify_login, create_user
 
 init_db()
 
@@ -33,10 +33,40 @@ def hello_world():
     return "You're not supposed to be here", 200
 
 
+@app.post("/api/register")
+def api_register():
+    data = request.get_json()
+
+    if not data or not "username" in data or not "password" in data:
+        return jsonify({"err": "could not register user"})
+
+    res = create_user(data["username"], data["password"])
+
+    if not res:
+        return jsonify({"err": "registration failed (db error?)"})
+
+    return jsonify({"ok": res})
+
+
+@app.post("/api/login")
+def api_login():
+    data = request.get_json()
+
+    if not data or not data["username"] or not data["password"]:
+        return jsonify({"err": "could not login user"})
+
+    res = verify_login(data["username"], data["password"])
+
+    if not res:
+        return jsonify({"err": "invalid login or password"})
+
+    return jsonify({"ok": res})
+
+
 @app.post("/getMovie")
-# @token_required
+@token_required
 def get_movie():
-    req = request.json
+    req = request.get_json()
 
     if not req:
         return jsonify({"err": "no request"})

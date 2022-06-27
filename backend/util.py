@@ -67,9 +67,16 @@ def init_db():
     db.create_all()
 
 
+# Env secret key
+secret_key = str(environ.get("secret_key"))
+
 # Register user
 def create_user(username, password):
     """Creates the user in the DB"""
+    user = Users.query.filter_by(name=username).first()
+    if user:
+        return None
+
     hashed_password = generate_password_hash(password)
     public_id = str(uuid4())
 
@@ -91,9 +98,9 @@ def verify_login(username, password):
     user = Users.query.filter_by(name=username).first()
 
     if check_password_hash(user.password, password):
-        token = jwt.encode(
+        token = encode(
             {"public_id": user.public_id, "exp": datetime.utcnow() + timedelta(days=7)},
-            app.config["SECRET_KEY"],
+            secret_key,
             "HS256",
         )
         return token
