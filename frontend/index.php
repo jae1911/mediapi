@@ -97,10 +97,15 @@
             echo $res->by_statement; 
         }
         echo "</h4>";
+        if (isset($res->subtitle))
+            echo "<h5>" . $res->subtitle . "</h5>";
         echo "<p>Published in " . $res->publish_date . "</p><br/>";
         if(isset($res->description->value))
             echo "<p><i>" . $res->description->value . "</i></p><br/>";
         
+        if(isset($res->first_sentence))
+            echo "<p>First sentence: \"<i>" . $res->first_sentence . "</i>\"</p><br/>";
+
         if(isset($res->notes->value)) {
             echo "<p>Notes: " . $res->notes->value . "</p><br/>";
         }
@@ -111,6 +116,14 @@
             foreach($res->subjects as $subject) {
                 echo $subject . ", ";
             }
+        }
+
+        if (isset($res->table_of_contents)) {
+            echo "<p>Table of content:</p><ul>";
+            foreach($res->table_of_contents as $content) {
+                echo "<li>" . $content->title . "</li>";
+            }
+            echo "</ul>";
         }
         ?>
         </p><br/>
