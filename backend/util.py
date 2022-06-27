@@ -132,3 +132,20 @@ def token_required(f):
         return f(current_user, *args, **kwargs)
 
     return decorator
+
+
+# ISBN validation
+def check(isbn):
+    check_digit = int(isbn[-1])
+    match = re.search(r"(\d)-(\d{3})-(\d{5})", isbn[:-1])
+
+    if not match:
+        return False
+
+    digits = match.group(1) + match.group(2) + match.group(3)
+    result = 0
+
+    for i, digit in enumerate(digits):
+        result += (i + 1) * int(digit)
+
+    return True if (result % 11) == check_digit else False
