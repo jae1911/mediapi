@@ -12,6 +12,7 @@ log = getLogger("mediapi.backend.app")
 secret_key = environ.get("secret_key")
 omdb_endpoint = environ.get("OMDB_ENDPOINT", "http://www.omdbapi.com/")
 omdb_key = environ.get("OMDB_KEY")
+olb_endpoint = environ.get("OLB_ENDPOINT", "https://openlibrary.org")
 
 # Setup app and important stuff
 app = Flask(__name__)
@@ -20,7 +21,15 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["SECRET_KEY"] = secret_key
 db = SQLAlchemy(app)
 
-from util import cache_val, get_val, init_db, token_required, verify_login, create_user
+from util import (
+    cache_val,
+    get_val,
+    init_db,
+    token_required,
+    verify_login,
+    create_user,
+    check,
+)
 
 init_db()
 
@@ -68,11 +77,8 @@ def api_login():
 def get_movie(self):
     req = request.get_json()
 
-    if not req:
-        return jsonify({"err": "no request"})
-
-    if not "title" in req:
-        return jsonify({"err": "missing important parameter"})
+    if not req or not "title" in req:
+        return jsonify({"err": "no data"})
 
     # Get content from request
     title = req["title"]
@@ -111,6 +117,45 @@ def get_movie(self):
     # Try and parse the content otherwise return error
     try:
         response_json = response.json()
+
+        cache_val(cache_name, response_json, 3600)
+        return jsonify(response_json)
+    except:
+        cache_val(cache_name, response.content, 3600)
+        return jsonify(response.content)
+
+
+# /isbn/978-7-119-09023-8
+
+
+@app.post("/getBook")
+@token_required
+def get_book(self):
+    req = request.get_json()
+
+    if not req or not "isbn" in req:
+        return jsonify({"err": "no data"})
+
+    isbn = req["isbn"]
+
+    # Validate ISBN
+    if not check(isbn):
+        return jsonify({"err": "invalid isbn"})
+
+    cache_name = f"book_search_{isbn}"
+    cached = get_val(cache_name)
+    if cached:
+        return jsonify(cached), 200
+
+    request_uri = f"{olb_endpoint}/isbn/{isbn}.json"
+
+    res = get(request_uri)
+
+    if res.status_code != 200:
+        log.exception(f"get_book: response code isn't 200: {res.content}")
+
+    try:
+        response_json = res.json()
 
         cache_val(cache_name, response_json, 3600)
         return jsonify(response_json)
