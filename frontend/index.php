@@ -18,6 +18,8 @@
             $want = $_POST['type'];
             if ($want == "movie") {
                 $res = $mediapi->queryMovies($_SESSION['token'], $_POST['query'], $_POST['year'], $_POST['scriptversion']);
+            } else {
+                $res = $mediapi->queryBooks($_SESSION['token'], $_POST['query']);
             }
 
             if(isset($res->err)) {
@@ -38,8 +40,9 @@
     <?php
 
     if(isset($err)) {
+        echo "<br/>";
         foreach($err as $e) {
-            print("<p>" . $e . "</p>");
+            print("<p>" . $e . "</p><br/>");
         }
     }
 
@@ -69,28 +72,54 @@
     <hr />
 
     <h3><?php echo ucfirst($want); ?> info</h3>
+    <div class="info">
     <?php if($want == "movie") { ?>
-        <div class="info">
-            <h4><?php echo $res->Title; ?> by <?php echo $res->Writer; ?></h4>
-            <p>Featuring <?php echo $res->Actors; ?> and released on <?php echo $res->Released; ?>.</p><br/>
-            <p><i><?php echo $res->Plot; ?></i></p><br/>
-            <p>Ratings:</p>
-            <ul>
-                <?php
-                foreach($res->Ratings as $rating) {
-                    echo "<li>" . $rating->Source . ": " . $rating->Value . "</li>";
-                }
-                ?>
-            </ul><br/>
+        <h4><?php echo $res->Title; ?> by <?php echo $res->Writer; ?></h4>
+        <p>Featuring <?php echo $res->Actors; ?> and released on <?php echo $res->Released; ?>.</p><br/>
+        <p><i><?php echo $res->Plot; ?></i></p><br/>
+        <p>Ratings:</p>
+        <ul>
+            <?php
+            foreach($res->Ratings as $rating) {
+                echo "<li>" . $rating->Source . ": " . $rating->Value . "</li>";
+            }
+            ?>
+        </ul><br/>
 
-            <img src="<?php echo $res->Poster; ?>">
-        </div>
-    <?php } ?>
+        <img src="<?php echo $res->Poster; ?>">
+    <?php } else { 
 
+        echo "<h4>" . $res->title;
+        if (isset($res->edition_name))
+            echo " " . $res->edition_name;
+        if (isset($res->by_statement)) {
+            echo " by ";
+            echo $res->by_statement; 
+        }
+        echo "</h4>";
+        echo "<p>Published in " . $res->publish_date . "</p><br/>";
+        if(isset($res->description->value))
+            echo "<p><i>" . $res->description->value . "</i></p><br/>";
+        
+        if(isset($res->notes->value)) {
+            echo "<p>Notes: " . $res->notes->value . "</p><br/>";
+        }
+
+        if(isset($res->subjects)) {
+            echo "<p>Subjects: ";
+
+            foreach($res->subjects as $subject) {
+                echo $subject . ", ";
+            }
+        }
+        ?>
+        </p><br/>
 </div>
 
 <?php
     }
+    echo "</div>";
+}
 
     require('includes/footer.php');
 ?>
