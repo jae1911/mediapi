@@ -37,4 +37,3 @@ https://mydomain.tld {
 
 Known issues are:
  - Visual bugs when loading long titles (page going too wide)
- - Redirect failure and error on login
