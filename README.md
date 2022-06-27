@@ -1,6 +1,8 @@
 # mediapi
 Small API with frontend made for a job interview
 
+![](https://bm.jae.su/ShareX/2022/06/firefox_b37kYuE3rC.png)
+
 ## Running
 
 Go in the `docker-compose.yml` and replace those environment variables:
