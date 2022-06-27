@@ -139,8 +139,8 @@ def get_book(self):
     isbn = req["isbn"]
 
     # Validate ISBN
-    if not check(isbn):
-        return jsonify({"err": "invalid isbn"})
+    # if not check(isbn):
+    #    return jsonify({"err": "invalid isbn"})
 
     cache_name = f"book_search_{isbn}"
     cached = get_val(cache_name)
@@ -160,5 +160,6 @@ def get_book(self):
         cache_val(cache_name, response_json, 3600)
         return jsonify(response_json)
     except:
-        cache_val(cache_name, response.content, 3600)
-        return jsonify(response.content)
+        res = {"err": "ISBN not found in the database."}
+        cache_val(cache_name, res, 3600)
+        return jsonify(res)
