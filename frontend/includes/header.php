@@ -13,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MediaPI<?php if(isset($pagetitle)) echo " - " . $pagetitle; ?></title>
 
-    <link rel="stylesheet" type="text/css" href="public/main.css">
+    <link rel="stylesheet" type="text/css" href="public/main.css?v=<?php echo time(); ?>">
 </head>
 <body>
 
