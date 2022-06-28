@@ -39,7 +39,7 @@ if (isset($_POST['user'])) {
             }
         }
     }
-} else {
+} else if (isset($_POST['media'])) {
     $err = [];
 
     if (!$loggedin)
