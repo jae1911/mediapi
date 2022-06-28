@@ -15,18 +15,16 @@
         if(empty($err)) {
             $mediapi = new Mediapi();
 
-            $want = $_POST['type'];
-            if ($want == "movie") {
-                $res = $mediapi->queryMovies($_SESSION['token'], $_POST['query'], $_POST['year'], $_POST['scriptversion']);
-            } else {
-                $res = $mediapi->queryBooks($_SESSION['token'], $_POST['query']);
+            $want = "movie";
+            $res = $mediapi->queryMovies($_SESSION['token'], addslashes($_POST['query']), addslashes($_POST['year']), addslashes($_POST['scriptversion']));
+            
+            if(isset($res->err) || isset($res->Error)) {
+                $want = "book";
+                $res = $mediapi->queryBooks($_SESSION['token'], addslashes($_POST['query']));
             }
 
-            if(isset($res->err)) {
-                $err[] = $res->err;
-                $res = NULL;
-            } else if(isset($res->Error)) {
-                $err[] = $res->Error;
+            if(isset($res->err) ||isset($res->error)) {
+                $err[] = "Could not find any book / movie with this query";
                 $res = NULL;
             }
         }
@@ -54,11 +52,6 @@
         <p><a href="logout.php">Log out.</a></p>
 
         <form action="index.php" method="post">
-            <p>I want <select name="type">
-                <option value="movie">a movie</option>
-                <option value="book">a book</option>
-            </select>
-            </p>
             <p>Query (Movie name or ISBN): <input type="text" name="query"/></p>
             <p>Year (only for movies): <input type="text" name="year"/></p>
             <p>Plot version (only for movies): <input type="text" name="scriptversion"/></p>
@@ -104,7 +97,10 @@
             echo "<p><i>" . $res->description->value . "</i></p><br/>";
         
         if(isset($res->first_sentence))
-            echo "<p>First sentence: \"<i>" . $res->first_sentence . "</i>\"</p><br/>";
+            if(is_array($res->first_sentence))
+                echo "<p>First sentence: \"<i>" . $res->first_sentence . "</i>\"</p><br/>";
+            else
+                echo "<p>First sentence: \"<i>" . $res->first_sentence->value . "</i>\"</p><br/>";
 
         if(isset($res->notes->value)) {
             echo "<p>Notes: " . $res->notes->value . "</p><br/>";
