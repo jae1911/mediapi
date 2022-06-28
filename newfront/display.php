@@ -38,6 +38,8 @@ if (isset($_POST['user'])) {
                 $res = NULL;
             }
         }
+        header('location: index.php');
+        exit();
     }
 } else if (isset($_POST['media'])) {
     $err = [];
