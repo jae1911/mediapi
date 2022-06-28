@@ -75,7 +75,11 @@ def api_login():
 @app.post("/getMovie")
 @token_required
 def get_movie(self):
-    req = request.get_json()
+    req = None
+    try:
+        req = request.get_json()
+    except:
+        log.info("getMovie: didn't received valid json")
 
     if not req or not "title" in req:
         return jsonify({"err": "no data"})
@@ -121,8 +125,8 @@ def get_movie(self):
         cache_val(cache_name, response_json, 3600)
         return jsonify(response_json)
     except:
-        cache_val(cache_name, response.content, 3600)
-        return jsonify(response.content)
+        res = {"err": "Movie not found in the database"}
+        return jsonify(res)
 
 
 # /isbn/978-7-119-09023-8
@@ -156,6 +160,8 @@ def get_book(self):
 
     try:
         response_json = res.json()
+
+        log.exception(response_json)
 
         cache_val(cache_name, response_json, 3600)
         return jsonify(response_json)
