@@ -98,6 +98,9 @@ def verify_login(username, password):
     """Verifies a login request and returns a token if ok"""
     user = Users.query.filter_by(name=username).first()
 
+    if not user:
+        return None
+
     if check_password_hash(user.password, password):
         token = encode(
             {"public_id": user.public_id, "exp": datetime.utcnow() + timedelta(days=7)},
