@@ -1,6 +1,6 @@
 <?php
 
-require('../util/mediapi.php');
+require('util/mediapi.php');
 
 // In case of user login / register
 if (isset($_POST['user'])) {
@@ -18,16 +18,18 @@ if (isset($_POST['user'])) {
 
         $loginApi = new LoginApi();
         $res = $loginApi->userAction($username, $password);
-        if(!$regres[0]) {
+        if(!$res[0]) {
             $res = $loginApi->userAction($username, $password, "login");
 
             if($res[0]) {
                 $_SESSION['token'] = $res[1];
+                $res = NULL;
             }
         } else {
             $res = $loginApi->userAction($username, $password, "login");
             if($res[0]) {
                 $_SESSION['token'] = $res[1];
+                $res = NULL;
             }
         }
     }
