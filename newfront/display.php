@@ -57,9 +57,6 @@ if (isset($_POST['user'])) {
         if(isset($res->err) || isset($res->Error)) {
             $want = "book";
             $res = $mediapi->queryBooks($_SESSION['token'], addslashes($_POST['query']));
-            $_RES = $res;
-        } else {
-            $_RES = $res;
         }
 
         if(isset($res->err) ||isset($res->error)) {
@@ -88,7 +85,7 @@ if(!$loggedin) {
     $HTML .= "<p><input type=\"submit\" name=\"user\" /></p>" . PHP_EOL;
 
     $HTML .= "</form>" . PHP_EOL;
-} else if($loggedin && empty($_RES)) {
+} else if($loggedin && empty($res)) {
     $HTML .= "<p>Input your query and search.</p><br/>" . PHP_EOL;
     $HTML .= "<p><a href=\"logout.php\">Log out</a></p>" . PHP_EOL;
     $HTML .= "<form action=\"index.php\" method=\"post\" name=\"media\">" . PHP_EOL;
@@ -108,12 +105,76 @@ if(!$loggedin) {
 
     $HTML .= "</form>";
 
-} else if($loggedin && !empty($_RES)) {
+} else if($loggedin && !empty($res)) {
     $HTML .= "<p>Query results.</p><br/>" . PHP_EOL;
+    $HTML .= "<p><a href=\"index.php\">Search again</a></p>" . PHP_EOL;
+
+    if($want == "movie") {
+        // Movie details
+        $HTML .= "<h4>" . $res->Title . " by " . $res->Writer . "</h4>" . PHP_EOL;
+        $HTML .= "<p>Featuring: " . $res->Actors . " and released on " . $res->Released . "</p><br/>" . PHP_EOL;
+        $HTML .= "<p><i>" . $res->Plot . "</p></i><br/>" . PHP_EOL;
+        $HTML .= "<p>Ratings:</p>" . PHP_EOL;
+        $HTML .= "<ul>" . PHP_EOL;
+
+        // Ratings
+        foreach ($res->Ratings as $rating) {
+            $HTML .= "<li>" . $rating->Source . ": " . $rating->Value . PHP_EOL;
+        }
+
+        $HTML .= "</ul>" . PHP_EOL;
+        $HTML .= "<img src=\"" . $res->Poster . "\"/>" . PHP_EOL;
+    } else {
+        // Book details
+        $title = $res->title;
+
+        if (isset($res->edition_name))
+            $title .= " " . $res->edition_name;
+        if (isset($res->by_statement))
+            $title .= " by " . $res->by_statement;
+
+        $HTML .= "<h4>" . $title . "</h4>" . PHP_EOL;
+
+        if (isset($res->subtitle))
+            $HTML .= "<h5>" . $res->subtitle . "</h5>" . PHP_EOL;
+
+        $HTML .= "<p>Published in ". $res->publish_date . ".</p><br/>" . PHP_EOL;
+
+        if(isset($res->first_sentence)) {
+            $fsen = '';
+            if(is_array($res->first_sentence))
+                $fsen = $res->first_sentence;
+            else
+                $fsen = $res->first_sentence->value;
+
+            $HTML .= "<p>First sentence: <i>" . $fsen . "</i></p><br/>" . PHP_EOL;
+        }
+
+        if(isset($res->notes))
+            $HTML .= "<p>Notes: " . $res->notes->value . "</p><br/>" . PHP_EOL;
+
+        if(isset($res->subjects)) {
+            $subString = '';
+            foreach($res->subjects as $subject)
+                $subString .= " " . $subject . ",";
+
+            $HTML .= "<p>Subjects:" . $subString . "</p><br/>" . PHP_EOL;
+        }
+
+        if(isset($res->table_of_contents)) {
+            $HTML .= "<p>Table of contents:</p><ul>" . PHP_EOL;
+            foreach($res->table_of_contents as $content) {
+                $HTML .= "<li>" . $content->title . "</li>" . PHP_EOL;
+            }
+            $HTML .= "</ul>" . PHP_EOL;
+        }
+
+    }
+
+    $res = NULL;
 }
 
 // Display page
 $content = $HTML;
 
-//require('./required/postman.php');
 require('./public/index.php');
