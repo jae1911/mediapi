@@ -13,7 +13,8 @@
     <h1>Mediapi</h1>
     <hr />
     <?php
-        echo $page;
+        if(isset($content))
+            echo $content;
     ?>
 </div>
 
