@@ -1,4 +1,9 @@
 <?php
+    require('utils/setup.php');
+
+    if($loggedin)
+        header('location: index.php');
+    
     $pagetitle = 'Register';
 
     require('includes/header.php');
@@ -55,8 +60,6 @@
         <p>Your password: <input type="password" name="password"/></p>
         <p><input type="submit" name="submit" /></p>
     </form>
-    <?php } else { ?>
-        <script type="text/javascript">window.location = "index.php";</script>
     <?php } ?>
 </div>
 
