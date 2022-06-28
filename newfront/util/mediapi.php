@@ -1,8 +1,6 @@
 <?php
 
 class ApiWrapper {
-    private const $API_BASEURL = "http://backend:5000";
-
     public function DoRequest($endpoint, $data, $token = "") {
         if(empty($endpoint) || empty($data))
             return NULL;
@@ -20,7 +18,7 @@ class ApiWrapper {
             )
         );
 
-        $finalUri = $API_BASEURL . $endpoint;
+        $finalUri = "http://backend:5000" . $endpoint;
         $context = stream_context_create($options);
         $result = file_get_contents($finalUri, false, $context);
 
@@ -37,8 +35,6 @@ class Mediapi {
         if (!empty($version))
             $data['plot_version'] = $version;
 
-        $data = json_encode(data);
-
         $apiWrapper = new ApiWrapper();
         $resultParsed = json_decode($apiWrapper->DoRequest('/getMovie', $data, $token));
 
@@ -47,7 +43,7 @@ class Mediapi {
 
     // Query books
     public function queryBooks($token, $isbn) {
-        $data = json_encode(array('isbn' => $isbn));
+        $data = array('isbn' => $isbn);
 
         $apiWrapper = new ApiWrapper();
         $resultParsed = json_decode($apiWrapper->DoRequest('/getBook', $data, $token));
@@ -61,12 +57,12 @@ class LoginApi {
     // This function will either login or register a user
     // By default this will login the user and return their JWT
     public function userAction($username, $password, $action = "login") {
-        $data = json_encode(array('username' => $username, 'password' => $password));
+        $data = array('username' => $username, 'password' => $password);
 
         $apiWrapper = new ApiWrapper();
         $resultParsed = json_decode($apiWrapper->DoRequest('/api/' . $action, $data));
 
-        if( strpos($result, "err") ) {
+        if( isset($resultParsed->err) ) {
             return array(False, $resultParsed->err);
         } else {
             return array(True, $resultParsed->ok);
