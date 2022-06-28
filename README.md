@@ -33,6 +33,40 @@ https://mydomain.tld {
 }
 ```
 
+## Standalone API
+
+The API endpoints with a sample of what to send:
+
+`/api/register`
+```
+"username": "test",
+"password": "verysecure"
+```
+Replies: public user id
+
+`/api/login`
+```
+"username": "test",
+"password": "verysecure"
+```
+Replies: JWT used to query API
+
+For the next endpoint, you will need to pass the JWT as a `x-access-tokens`
+
+`/getMovie`
+```
+"title": "Star Wars",
+"year": "2019",
+"plot_version": 1
+```
+Replies all the data about the movie, cached for an hour. The `year` and `plot_version` arguments are optional, only the `year` is required.
+
+`/getBook`
+```
+"isbn": "978-0-8351-2388-4"
+```
+Replies all the data about the book.
+
 ## Known issues
 
 Known issues are:
