@@ -30,8 +30,6 @@ if (isset($_POST['user'])) {
                 $_SESSION['token'] = $res[1];
             }
         }
-    } else {
-        return json_encode($err);
     }
 } else if (isset($_POST['media'])) {
     $err = [];
@@ -57,7 +55,5 @@ if (isset($_POST['user'])) {
             $err[] = "Could not find any book / movie with this query";
             $res = NULL;
         }
-    } else {
-        return json_encode($err);
     }
 }
