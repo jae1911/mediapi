@@ -28,9 +28,9 @@ services:
     #image: php:8.1.7-apache-bullseye
     build:
       dockerfile: Dockerfile
-      context: ./frontend
+      context: ./newfront
     #volumes:
-    #  - ./frontend:/var/www/html
+    #  - ./newfront:/var/www/html
     depends_on:
       - backend
     #ports:
