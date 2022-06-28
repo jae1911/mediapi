@@ -40,7 +40,7 @@ class Mediapi {
         $data = json_encode(data);
 
         $apiWrapper = new ApiWrapper();
-        $resultParsed = json_decode($apiWrapper.DoRequest('/getMovie', $data, $token));
+        $resultParsed = json_decode($apiWrapper->DoRequest('/getMovie', $data, $token));
 
         return $resultParsed;
     }
@@ -50,7 +50,7 @@ class Mediapi {
         $data = json_encode(array('isbn' => $isbn));
 
         $apiWrapper = new ApiWrapper();
-        $resultParsed = json_decode($apiWrapper.DoRequest('/getBook', $data, $token));
+        $resultParsed = json_decode($apiWrapper->DoRequest('/getBook', $data, $token));
 
         return $resultParsed;
     }
@@ -64,7 +64,7 @@ class LoginApi {
         $data = json_encode(array('username' => $username, 'password' => $password));
 
         $apiWrapper = new ApiWrapper();
-        $resultParsed = json_decode($apiWrapper.DoRequest('/api/' . $action, $data));
+        $resultParsed = json_decode($apiWrapper->DoRequest('/api/' . $action, $data));
 
         if( strpos($result, "err") ) {
             return array(False, $resultParsed->err);
