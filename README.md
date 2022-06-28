@@ -1,7 +1,7 @@
 # mediapi
 Small API with frontend made for a job interview
 
-![](https://bm.jae.su/ShareX/2022/06/firefox_b37kYuE3rC.png)
+![](https://bm.jae.su/ShareX/2022/06/firefox_1K6Y6WPkwS.png)
 
 ## Running
 
