@@ -1,5 +1,7 @@
 <?php
 
+    require('utils/setup.php');
+
     $pagetitle = 'Index';
 
     require('includes/header.php');
