@@ -23,7 +23,7 @@ if (isset($_POST['user'])) {
         $password = $_POST['password'];
 
         $loginApi = new LoginApi();
-        $res = $loginApi->userAction($username, $password);
+        $res = $loginApi->userAction($username, $password, "register");
         if(!$res[0]) {
             $res = $loginApi->userAction($username, $password, "login");
 
